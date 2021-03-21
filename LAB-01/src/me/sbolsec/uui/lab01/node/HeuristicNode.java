@@ -19,11 +19,6 @@ public class HeuristicNode<S> extends CostNode<S> {
         return (HeuristicNode<S>) super.getParent();
     }
 
-    @Override
-    public String toString() {
-        return String.format("(%s, %.1f, %.1f)", state, cost, totalEstimatedCost);
-    }
-
     public static final Comparator<HeuristicNode<?>> COMPARE_BY_COST =
             (n1, n2) -> Double.compare(n1.getCost(), n2.getCost());
 

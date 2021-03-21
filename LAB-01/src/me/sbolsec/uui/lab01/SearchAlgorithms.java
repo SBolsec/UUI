@@ -11,16 +11,16 @@ import java.util.function.Predicate;
 
 public class SearchAlgorithms {
     public static <S> Optional<SearchResult<S>> breadthFirstSearch(S s0, Function<S, Set<StateCostPair<S>>> succ, Predicate<S> goal) {
-        int statesVisited = 1;
+        int statesVisited = 0;
 
         Deque<CostNode<S>> open = new LinkedList<>();
         open.add(new CostNode<>(s0, null, 0.0));
 
         while (!open.isEmpty()) {
             CostNode<S> n = open.removeFirst();
+            statesVisited++;
             if (goal.test(n.getState())) return Optional.of(new SearchResult<>(n, statesVisited));
             for (StateCostPair<S> child : succ.apply(n.getState())) {
-                statesVisited++;
                 open.addLast(new CostNode(child.getState(), n, n.getCost() + child.getCost()));
             }
         }
@@ -51,15 +51,15 @@ public class SearchAlgorithms {
     }
 
     public static <S> Optional<SearchResult<S>> uniformCostSearch(S s0, Function<S, Set<StateCostPair<S>>> succ, Predicate<S> goal) {
-        int statesVisited = 1;
+        int statesVisited = 0;
         Queue<CostNode<S>> open = new PriorityQueue<>();
         open.add(new CostNode<>(s0, null, 0.0));
 
         while (!open.isEmpty()) {
             CostNode<S> n = open.remove();
+            statesVisited++;
             if (goal.test(n.getState())) return Optional.of(new SearchResult<>(n, statesVisited));
             for (StateCostPair<S> child : succ.apply(n.getState())) {
-                statesVisited++;
                 open.add(new CostNode<>(child.getState(), n, n.getCost() + child.getCost()));
             }
         }

@@ -14,8 +14,8 @@ import java.util.Optional;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        String path1 = "/home/sinisa-b53j/Downloads/ai.txt";
-        String path2 = "/home/sinisa-b53j/Downloads/ai_fail.txt";
+        String path1 = "/home/sinisa-b53j/Downloads/istra.txt";
+        String path2 = "/home/sinisa-b53j/Downloads/istra_heuristic.txt";
 
         StateSpaceDescriptor ssd = new StateSpaceDescriptor(path1);
         HeuristicFunctionDescriptor hfd = new HeuristicFunctionDescriptor(path2);
