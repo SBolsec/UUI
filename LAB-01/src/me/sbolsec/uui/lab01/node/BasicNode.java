@@ -30,7 +30,7 @@ public class BasicNode<S> {
 
     @Override
     public String toString() {
-        return String.format("%s ", state);
+        return String.format("%s", state);
     }
 
     public static <X> String nodePath(BasicNode<X> node) {
@@ -42,7 +42,7 @@ public class BasicNode<S> {
     private static <X> void nodePathRecursive(StringBuilder sb, BasicNode<X> node) {
         if (node.getParent() != null) {
             nodePathRecursive(sb, node.getParent());
-            sb.append("=>\n");
+            sb.append(" => ");
         }
         sb.append(node);
     }
