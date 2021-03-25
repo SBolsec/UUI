@@ -2,6 +2,7 @@ package ui;
 
 import ui.descriptor.HeuristicFunctionDescriptor;
 import ui.descriptor.StateSpaceDescriptor;
+import ui.heuristic.Checker;
 import ui.node.Node;
 import ui.search.Algorithms;
 import ui.search.SearchAlgorithm;
@@ -131,13 +132,13 @@ public class Solution {
 		if (checkOptimistic) {
 			if (pathToStateSpaceDescriptor == null) throw new IllegalArgumentException("Path to state space descriptor was not provided!");
 			if (pathToHeuristicFunctionDescriptor == null) throw new IllegalArgumentException("Path to heuristic descriptor was not provided!");
-			// TODO: check optimistic
+			Checker.checkOptimistic(pathToStateSpaceDescriptor, pathToHeuristicFunctionDescriptor);
 		}
 
 		if (checkConsistent) {
 			if (pathToStateSpaceDescriptor == null) throw new IllegalArgumentException("Path to state space descriptor was not provided!");
 			if (pathToHeuristicFunctionDescriptor == null) throw new IllegalArgumentException("Path to heuristic descriptor was not provided!");
-			// TODO: check consistent
+			Checker.checkConsistent(pathToStateSpaceDescriptor, pathToHeuristicFunctionDescriptor);
 		}
 	}
 

@@ -21,7 +21,7 @@ public class StateSpaceDescriptor {
     /** Set of final states */
     private Set<State> finalStates;
     /** Transitions between states */
-    private Map<State, Set<Transition>> transitions;
+    private Map<State, List<Transition>> transitions;
 
     /**
      * Constructor which initializes the state space from a file.
@@ -57,11 +57,12 @@ public class StateSpaceDescriptor {
             String[] l = lines.get(i).split(" ");
             String state = l[0].substring(0, l[0].length() - 1); // remove the colon
 
-            Set<Transition> t = new HashSet<>();
+            List<Transition> t = new ArrayList<>();
             for (int j = 1; j < l.length; j++) {
                 String[] s = l[j].split(",");
                 t.add(new Transition(new State(s[0]), Double.parseDouble(s[1])));
             }
+            Collections.sort(t, (t1, t2) -> t1.getState().compareTo(t2.getState()));
 
             this.transitions.put(new State(state), t);
         }
@@ -87,7 +88,7 @@ public class StateSpaceDescriptor {
      * Returns unmodifiable map of transitions.
      * @return map of transitions
      */
-    public Map<State, Set<Transition>> getTransitions() {
+    public Map<State, List<Transition>> getTransitions() {
         return Collections.unmodifiableMap(transitions);
     }
 

@@ -34,7 +34,7 @@ public class HeuristicFunctionDescriptor {
                 .map(String::trim)
                 .collect(Collectors.toList());
 
-        heuristics = new HashMap<>();
+        heuristics = new TreeMap<>();
 
         // parse the lines
         for (int i = 0, n = lines.size(); i < n; i++) {

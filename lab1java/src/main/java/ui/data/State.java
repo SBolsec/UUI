@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * Class that models the state.
  */
-public class State {
+public class State implements Comparable<State> {
     /** Name of the state */
     private String name;
 
@@ -54,5 +54,15 @@ public class State {
     @Override
     public String toString() {
         return name;
+    }
+
+    /**
+     * Compares this state to other state
+     * @param o other state
+     * @return integer value that represents compare
+     */
+    @Override
+    public int compareTo(State o) {
+        return getName().compareTo(o.getName());
     }
 }
