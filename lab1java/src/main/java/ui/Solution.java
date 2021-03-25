@@ -102,18 +102,24 @@ public class Solution {
 			StateSpaceDescriptor ssd = new StateSpaceDescriptor(pathToStateSpaceDescriptor);
 
 			switch (algorithm) {
-				case BFS:
+				case BFS: {
 					SearchResult result = Algorithms.bfs(ssd.getInitialState(), ssd.SUCCESSOR, ssd.GOAL);
 					System.out.println("# BFS");
 					printResult(result);
 					break;
-				case UCS:
-					// TODO: ucs
+				}
+				case UCS: {
+					SearchResult result = Algorithms.ucs(ssd.getInitialState(), ssd.SUCCESSOR, ssd.GOAL);
+					System.out.println("# UCS");
+					printResult(result);
 					break;
-				case ASTAR:
-					if (pathToHeuristicFunctionDescriptor == null) throw new IllegalArgumentException("Path to heuristic descriptor was not provided!");
+				}
+				case ASTAR: {
+					if (pathToHeuristicFunctionDescriptor == null)
+						throw new IllegalArgumentException("Path to heuristic descriptor was not provided!");
 					// TODO: astar
 					break;
+				}
 				default:
 					throw new IllegalArgumentException("Unsupported search algorithm!");
 			}

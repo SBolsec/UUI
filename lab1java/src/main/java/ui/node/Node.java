@@ -1,6 +1,7 @@
 package ui.node;
 
 import ui.data.State;
+import ui.data.Transition;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -14,9 +15,7 @@ public class Node {
     /** Parent node */
     private Node parent;
     /** State of the node */
-    private State state;
-    /** Cost of the node */
-    private double cost;
+    private Transition transition;
 
     /**
      * Initializes node with no parent and sets cost to 0.
@@ -34,8 +33,7 @@ public class Node {
      */
     public Node(Node parent, State state, double cost) {
         this.parent = parent;
-        this.state = state;
-        this.cost = cost;
+        this.transition = new Transition(state, cost);
     }
 
     /**
@@ -47,11 +45,19 @@ public class Node {
     }
 
     /**
+     * Returns the transition
+     * @return transition
+     */
+    public Transition getTransition() {
+        return transition;
+    }
+
+    /**
      * Returns the state
      * @return state
      */
     public State getState() {
-        return state;
+        return transition.getState();
     }
 
     /**
@@ -59,12 +65,12 @@ public class Node {
      * @return cost
      */
     public double getCost() {
-        return cost;
+        return transition.getCost();
     }
 
     /**
-     * Checks whether nodes are equal
-     * @param o node to check
+     * Checks whether the objects are equal
+     * @param o object to test
      * @return true if equal, false otherwise
      */
     @Override
@@ -72,16 +78,16 @@ public class Node {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Node node = (Node) o;
-        return Double.compare(node.cost, cost) == 0 && Objects.equals(parent, node.parent) && Objects.equals(state, node.state);
+        return Objects.equals(parent, node.parent) && Objects.equals(transition, node.transition);
     }
 
     /**
-     * Returns the hash code of this node
+     * Returns hash code
      * @return hash code
      */
     @Override
     public int hashCode() {
-        return Objects.hash(parent, state, cost);
+        return Objects.hash(parent, transition);
     }
 
     /**
