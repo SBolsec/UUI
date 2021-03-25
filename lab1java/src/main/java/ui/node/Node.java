@@ -3,6 +3,7 @@ package ui.node;
 import ui.data.State;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -89,7 +90,7 @@ public class Node {
      */
     public int getDepth() {
         int depth = 1;
-        Node node = getParent();
+        Node node = this;
         while (node.getParent() != null) {
             node = node.getParent();
             depth++;
@@ -113,4 +114,24 @@ public class Node {
 
         return path;
     }
+
+    /**
+     * Comparator by the state name.
+     */
+    public static final Comparator<Node> BY_NAME = (n1, n2) -> {
+        if (n1 == null && n2 == null) return 0;
+        if (n1 == null) return 1;
+        if (n2 == null) return -1;
+        return n1.getState().getName().compareTo(n2.getState().getName());
+    };
+
+    /**
+     * Comparator by the cost.
+     */
+    public static final Comparator<Node> BY_COST= (n1, n2) -> {
+        if (n1 == null && n2 == null) return 0;
+        if (n2 == null || n1.getCost() < n2.getCost()) return -1;
+        if (n1 == null || n1.getCost() > n2.getCost()) return 1;
+        return 0;
+    };
 }

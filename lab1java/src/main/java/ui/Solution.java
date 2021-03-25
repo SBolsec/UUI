@@ -1,5 +1,13 @@
 package ui;
 
+import ui.descriptor.StateSpaceDescriptor;
+import ui.node.Node;
+import ui.search.Algorithms;
+import ui.search.SearchAlgorithm;
+import ui.search.SearchResult;
+
+import java.io.IOException;
+
 /**
  * Starting point of program.
  */
@@ -26,7 +34,7 @@ public class Solution {
 			switch (args[i].toLowerCase()) {
 				case "--alg":
 					if (algorithm != null) throw new IllegalArgumentException("Algorithm was already set!");
-					if (i+1 < args.length) throw new IllegalArgumentException("No algorithm was provided!");
+					if (i+1 >= args.length) throw new IllegalArgumentException("No algorithm was provided!");
 					i++;
 					switch (args[i].toLowerCase()) {
 						case "bfs":
@@ -37,15 +45,15 @@ public class Solution {
 							algorithm = SearchAlgorithm.ASTAR; break outer;
 						default: throw new IllegalArgumentException("Algorithm not supported!\nSupported algorithms are:\n\t1. bfs\n\t2. ucs\n\t 3. astar");
 					}
-				case "--s":
+				case "--ss":
 					if (pathToStateSpaceDescriptor != null) throw new IllegalArgumentException("Path to state space descriptor was already set!");
-					if (i+1 < args.length) throw new IllegalArgumentException("No path to state space descriptor was provided!");
+					if (i+1 >= args.length) throw new IllegalArgumentException("No path to state space descriptor was provided!");
 					pathToStateSpaceDescriptor = args[i+1];
 					i++;
 					break;
 				case "--h":
 					if (pathToHeuristicFunctionDescriptor != null) throw new IllegalArgumentException("Path to heuristic descriptor was already set!");
-					if (i+1 < args.length) throw new IllegalArgumentException("No path to heuristic descriptor was provided!");
+					if (i+1 >= args.length) throw new IllegalArgumentException("No path to heuristic descriptor was provided!");
 					pathToHeuristicFunctionDescriptor = args[i+1];
 					i++;
 					break;
@@ -65,19 +73,39 @@ public class Solution {
 		if (checkConsistent == null) checkConsistent = false;
 	}
 
+	public static void printResult(SearchResult result) {
+		if (result.getNode().isEmpty()) {
+			System.out.println("[FOUND_SOLUTION]: no");
+			return;
+		}
+		Node node = result.getNode().get();
+		System.out.println("[FOUND_SOLUTION]: yes");
+		System.out.println("[STATES_VISITED]: " + result.getStatesVisited());
+		System.out.println("[PATH_LENGTH]: " + node.getDepth());
+		System.out.format("[TOTAL_COST]: %.1f\n", node.getCost());
+		System.out.println("[PATH]: " + Utils.getPathAsString(node.getPath()));
+	}
+
+
+
 	/**
 	 * Starting point.
 	 * @param args command line arguments
 	 * @throws IllegalArgumentException if there is an error with the arguments
+	 * @throws IOException if there is a problem with the provided files
 	 */
-	public static void main(String ... args) {
+	public static void main(String ... args) throws IOException {
 		parseArgs(args);
 
 		if (algorithm != null) {
 			if (pathToStateSpaceDescriptor == null) throw new IllegalArgumentException("Path to state space descriptor was not provided!");
+			StateSpaceDescriptor ssd = new StateSpaceDescriptor(pathToStateSpaceDescriptor);
+
 			switch (algorithm) {
 				case BFS:
-					// TODO: bfs
+					SearchResult result = Algorithms.bfs(ssd.getInitialState(), ssd.SUCCESSOR, ssd.GOAL);
+					System.out.println("# BFS");
+					printResult(result);
 					break;
 				case UCS:
 					// TODO: ucs

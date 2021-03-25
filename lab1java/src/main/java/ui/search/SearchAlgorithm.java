@@ -1,4 +1,4 @@
-package ui;
+package ui.search;
 
 /**
  * Enumeration of supported search algorithms

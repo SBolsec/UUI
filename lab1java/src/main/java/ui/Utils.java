@@ -1,7 +1,11 @@
 package ui;
 
+import ui.node.Node;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Helper functions.
@@ -27,5 +31,14 @@ public class Utils {
             throw new IllegalArgumentException("Do not have read permission for provided file!");
 
         return path;
+    }
+
+    /**
+     * Turns given path of nodes into string representation.
+     * @param path path of nodes
+     * @return string representation of path
+     */
+    public static String getPathAsString(List<Node> path) {
+        return String.join(" => ", path.stream().map(node -> node.getState().getName()).collect(Collectors.toList()));
     }
 }

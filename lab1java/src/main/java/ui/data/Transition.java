@@ -1,5 +1,6 @@
 package ui.data;
 
+import java.util.Comparator;
 import java.util.Objects;
 
 /**
@@ -67,4 +68,24 @@ public class Transition {
     public String toString() {
         return String.format("(%s, %.1f)", state, cost);
     }
+
+    /**
+     * Comparator by state name.
+     */
+    public static final Comparator<Transition> BY_NAME = (t1, t2) -> {
+        if (t1 == null && t2 == null) return 0;
+        if (t1 == null) return 1;
+        if (t2 == null) return -1;
+        return t1.getState().getName().compareTo(t2.getState().getName());
+    };
+
+    /**
+     * Comparator by cost.
+     */
+    public static final Comparator<Transition> BY_COST = (t1, t2) -> {
+        if (t1 == null && t2 == null) return 0;
+        if (t1 == null) return 1;
+        if (t2 == null) return -1;
+        return Double.compare(t1.getCost(), t2.getCost());
+    };
 }
