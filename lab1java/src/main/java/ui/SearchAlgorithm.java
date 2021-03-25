@@ -1,5 +1,8 @@
 package ui;
 
+/**
+ * Enumeration of supported search algorithms
+ */
 public enum SearchAlgorithm {
     /** Breadth first search */
     BFS,
