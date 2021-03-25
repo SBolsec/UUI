@@ -2,6 +2,7 @@ package ui.search;
 
 import ui.data.State;
 import ui.data.Transition;
+import ui.node.HeuristicNode;
 import ui.node.Node;
 
 import java.util.*;
@@ -69,6 +70,59 @@ public class Algorithms {
                 if (!visited.contains(m.getState()) && !open.stream().map(node -> node.getState()).collect(Collectors.toSet()).contains(m.getState())) {
                     open.add(new Node(n, m.getState(), m.getCost() + n.getCost()));
                 }
+            }
+        }
+        return new SearchResult(Optional.empty(), statesVisited);
+    }
+
+    /**
+     * A* search algorithm
+     * @param s0 initial state
+     * @param succ successor function
+     * @param goal goal function
+     * @param h heuristic function
+     * @return result of search
+     */
+    public static SearchResult astar(State s0, Function<State, Set<Transition>> succ, Predicate<State> goal, Function<State, Double> h) {
+        Queue<HeuristicNode> open = new PriorityQueue<>(HeuristicNode.BY_TOTAL_COST.thenComparing(HeuristicNode.BY_NAME));
+        open.add(new HeuristicNode(s0, h.apply(s0)));
+        Set<State> closed = new HashSet<>();
+
+        int statesVisited = 0;
+
+        while (!open.isEmpty()) {
+            HeuristicNode n = open.remove();
+            statesVisited++;
+            if (goal.test(n.getState())) {
+                return new SearchResult(Optional.of(n), statesVisited);
+            }
+            closed.add(n.getState());
+
+            outer:
+            for (Transition m : succ.apply(n.getState())) {
+                // check if closed contains this state
+                if (closed.contains(m.getState())) {
+                    continue;
+                }
+
+                double cost = m.getCost() + n.getCost();
+                double totalCost = cost + h.apply(m.getState());
+
+                // check if open contains this state
+                // Iterator has to be used because removing an element while looping is not possible
+                Iterator<HeuristicNode> it = open.iterator();
+                while (it.hasNext()) {
+                    HeuristicNode o = it.next();
+                    if (o.getState().equals(m.getState())) {
+                        if (o.getTotalCost() <= totalCost) {
+                            continue outer;
+                        } else {
+                            it.remove();
+                        }
+                    }
+                }
+
+                open.add(new HeuristicNode(n, m.getState(), cost, totalCost));
             }
         }
         return new SearchResult(Optional.empty(), statesVisited);

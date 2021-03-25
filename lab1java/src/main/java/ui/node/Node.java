@@ -13,9 +13,9 @@ import java.util.Objects;
  */
 public class Node {
     /** Parent node */
-    private Node parent;
+    protected Node parent;
     /** State of the node */
-    private Transition transition;
+    protected Transition transition;
 
     /**
      * Initializes node with no parent and sets cost to 0.

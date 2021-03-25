@@ -1,5 +1,6 @@
 package ui;
 
+import ui.descriptor.HeuristicFunctionDescriptor;
 import ui.descriptor.StateSpaceDescriptor;
 import ui.node.Node;
 import ui.search.Algorithms;
@@ -115,9 +116,11 @@ public class Solution {
 					break;
 				}
 				case ASTAR: {
-					if (pathToHeuristicFunctionDescriptor == null)
-						throw new IllegalArgumentException("Path to heuristic descriptor was not provided!");
-					// TODO: astar
+					if (pathToHeuristicFunctionDescriptor == null) throw new IllegalArgumentException("Path to heuristic descriptor was not provided!");
+					HeuristicFunctionDescriptor hfd = new HeuristicFunctionDescriptor(pathToHeuristicFunctionDescriptor);
+					SearchResult result = Algorithms.astar(ssd.getInitialState(), ssd.SUCCESSOR, ssd.GOAL, hfd.HEURISTIC);
+					System.out.println("# A-STAR " + pathToHeuristicFunctionDescriptor);
+					printResult(result);
 					break;
 				}
 				default:
