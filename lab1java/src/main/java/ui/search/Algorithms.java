@@ -110,7 +110,6 @@ public class Algorithms {
         int statesVisited = 0;
 
         while (!open.isEmpty()) {
-            System.out.println(statesVisited);
             HeuristicNode n = open.remove();
             statesVisited++;
             if (goal.test(n.getState())) {
