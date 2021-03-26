@@ -136,8 +136,8 @@ public class Node {
      */
     public static final Comparator<Node> BY_COST= (n1, n2) -> {
         if (n1 == null && n2 == null) return 0;
-        if (n2 == null || n1.getCost() < n2.getCost()) return -1;
-        if (n1 == null || n1.getCost() > n2.getCost()) return 1;
-        return 0;
+        if (n2 == null) return -1;
+        if (n1 == null) return 1;
+        return Double.compare(n1.getCost(), n2.getCost());
     };
 }

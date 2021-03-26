@@ -66,10 +66,28 @@ public class Algorithms {
                 return new SearchResult(Optional.of(n), statesVisited);
             }
             visited.add(n.getState());
+
+            outer:
             for (Transition m : succ.apply(n.getState())) {
-                if (!visited.contains(m.getState()) && !open.stream().map(node -> node.getState()).collect(Collectors.toSet()).contains(m.getState())) {
-                    open.add(new Node(n, m.getState(), m.getCost() + n.getCost()));
+                if (visited.contains(m.getState())) {
+                    continue;
                 }
+
+                // check if open contains this state
+                // Iterator has to be used because removing an element while looping is not possible
+                Iterator<Node> it = open.iterator();
+                while (it.hasNext()) {
+                    Node o = it.next();
+                    if (o.getState().equals(m.getState())) {
+                        if (o.getCost() <= m.getCost() + n.getCost()) {
+                            continue outer;
+                        } else {
+                            it.remove();
+                        }
+                    }
+                }
+
+                open.add(new Node(n, m.getState(), m.getCost() + n.getCost()));
             }
         }
         return new SearchResult(Optional.empty(), statesVisited);
