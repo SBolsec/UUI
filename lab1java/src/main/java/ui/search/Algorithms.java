@@ -36,7 +36,7 @@ public class Algorithms {
                 return new SearchResult(Optional.of(n), statesVisited);
             }
             visited.add(n.getState());
-            for (Transition m : succ.apply(n.getState()).stream().sorted(Transition.BY_NAME).collect(Collectors.toSet())) {
+            for (Transition m : succ.apply(n.getState())) {
                 if (!visited.contains(m.getState())) {
                     open.add(new Node(n, m.getState(), m.getCost() + n.getCost()));
                 }
@@ -67,7 +67,6 @@ public class Algorithms {
             }
             visited.add(n.getState());
 
-            outer:
             for (Transition m : succ.apply(n.getState())) {
                 if (visited.contains(m.getState())) {
                     continue;
@@ -75,19 +74,21 @@ public class Algorithms {
 
                 // check if open contains this state
                 // Iterator has to be used because removing an element while looping is not possible
+                boolean seenCheeper = false;
                 Iterator<Node> it = open.iterator();
                 while (it.hasNext()) {
                     Node o = it.next();
                     if (o.getState().equals(m.getState())) {
                         if (o.getCost() <= m.getCost() + n.getCost()) {
-                            continue outer;
+                            seenCheeper = true;
                         } else {
                             it.remove();
                         }
                     }
                 }
 
-                open.add(new Node(n, m.getState(), m.getCost() + n.getCost()));
+                if (!seenCheeper)
+                    open.add(new Node(n, m.getState(), m.getCost() + n.getCost()));
             }
         }
         return new SearchResult(Optional.empty(), statesVisited);
@@ -116,7 +117,6 @@ public class Algorithms {
             }
             closed.add(n.getState());
 
-            outer:
             for (Transition m : succ.apply(n.getState())) {
                 // check if closed contains this state
                 if (closed.contains(m.getState())) {
@@ -128,19 +128,21 @@ public class Algorithms {
 
                 // check if open contains this state
                 // Iterator has to be used because removing an element while looping is not possible
+                boolean seenCheeper = false;
                 Iterator<HeuristicNode> it = open.iterator();
                 while (it.hasNext()) {
                     HeuristicNode o = it.next();
                     if (o.getState().equals(m.getState())) {
                         if (o.getTotalCost() <= totalCost) {
-                            continue outer;
+                            seenCheeper = true;
                         } else {
                             it.remove();
                         }
                     }
                 }
 
-                open.add(new HeuristicNode(n, m.getState(), cost, totalCost));
+                if (!seenCheeper)
+                    open.add(new HeuristicNode(n, m.getState(), cost, totalCost));
             }
         }
         return new SearchResult(Optional.empty(), statesVisited);
