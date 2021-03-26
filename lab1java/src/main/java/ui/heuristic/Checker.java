@@ -27,7 +27,7 @@ public class Checker {
         boolean optimistic = true;
         for (Map.Entry<State, Double> entry : hfd.getHeuristics().entrySet()) {
             // find the real cost using bfs
-            SearchResult result = Algorithms.bfs(entry.getKey(), ssd.SUCCESSOR, ssd.GOAL);
+            SearchResult result = Algorithms.ucs(entry.getKey(), ssd.SUCCESSOR, ssd.GOAL);
             double realCost = result.getNode().get().getCost();
 
             // form the output string
