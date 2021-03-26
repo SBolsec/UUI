@@ -8,7 +8,6 @@ import ui.node.Node;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Holds implementations of search algorithms
