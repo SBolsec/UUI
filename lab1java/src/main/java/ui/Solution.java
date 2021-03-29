@@ -3,7 +3,6 @@ package ui;
 import ui.descriptor.HeuristicFunctionDescriptor;
 import ui.descriptor.StateSpaceDescriptor;
 import ui.heuristic.Checker;
-import ui.node.Node;
 import ui.search.Algorithms;
 import ui.search.SearchAlgorithm;
 import ui.search.SearchResult;
@@ -75,21 +74,6 @@ public class Solution {
 		if (checkConsistent == null) checkConsistent = false;
 	}
 
-	public static void printResult(SearchResult result) {
-		if (result.getNode().isEmpty()) {
-			System.out.println("[FOUND_SOLUTION]: no");
-			return;
-		}
-		Node node = result.getNode().get();
-		System.out.println("[FOUND_SOLUTION]: yes");
-		System.out.println("[STATES_VISITED]: " + result.getStatesVisited());
-		System.out.println("[PATH_LENGTH]: " + node.getDepth());
-		System.out.format("[TOTAL_COST]: %.1f\n", node.getCost());
-		System.out.println("[PATH]: " + Utils.getPathAsString(node.getPath()));
-	}
-
-
-
 	/**
 	 * Starting point.
 	 * @param args command line arguments
@@ -105,23 +89,23 @@ public class Solution {
 
 			switch (algorithm) {
 				case BFS: {
-					SearchResult result = Algorithms.bfs(ssd.getInitialState(), ssd.SUCCESSOR, ssd.GOAL);
 					System.out.println("# BFS");
-					printResult(result);
+					SearchResult result = Algorithms.bfs(ssd.getInitialState(), ssd.SUCCESSOR_BY_NAME, ssd.GOAL);
+					System.out.println(result);
 					break;
 				}
 				case UCS: {
-					SearchResult result = Algorithms.ucs(ssd.getInitialState(), ssd.SUCCESSOR, ssd.GOAL);
 					System.out.println("# UCS");
-					printResult(result);
+					SearchResult result = Algorithms.ucs(ssd.getInitialState(), ssd.SUCCESSOR, ssd.GOAL);
+					System.out.println(result);
 					break;
 				}
 				case ASTAR: {
 					if (pathToHeuristicFunctionDescriptor == null) throw new IllegalArgumentException("Path to heuristic descriptor was not provided!");
 					HeuristicFunctionDescriptor hfd = new HeuristicFunctionDescriptor(pathToHeuristicFunctionDescriptor);
-					SearchResult result = Algorithms.astar(ssd.getInitialState(), ssd.SUCCESSOR, ssd.GOAL, hfd.HEURISTIC);
 					System.out.println("# A-STAR " + pathToHeuristicFunctionDescriptor);
-					printResult(result);
+					SearchResult result = Algorithms.astar(ssd.getInitialState(), ssd.SUCCESSOR, ssd.GOAL, hfd.HEURISTIC);
+					System.out.println(result);
 					break;
 				}
 				default:

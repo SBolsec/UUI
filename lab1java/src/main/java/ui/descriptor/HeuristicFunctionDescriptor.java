@@ -33,7 +33,7 @@ public class HeuristicFunctionDescriptor {
                 .map(String::trim)
                 .collect(Collectors.toList());
 
-        heuristics = new TreeMap<>();
+        heuristics = new HashMap<>();
 
         // parse the lines
         for (int i = 0, n = lines.size(); i < n; i++) {
@@ -48,7 +48,7 @@ public class HeuristicFunctionDescriptor {
      * @return map of heuristics
      */
     public Map<String, Double> getHeuristics() {
-        return Collections.unmodifiableMap(heuristics);
+        return heuristics;
     }
 
     public final Function<String, Double> HEURISTIC = state -> getHeuristics().get(state);

@@ -72,20 +72,11 @@ public class Transition {
     /**
      * Comparator by state name.
      */
-    public static final Comparator<Transition> BY_NAME = (t1, t2) -> {
-        if (t1 == null && t2 == null) return 0;
-        if (t1 == null) return 1;
-        if (t2 == null) return -1;
-        return t1.getState().compareTo(t2.getState());
-    };
+    public static final Comparator<Transition> BY_NAME = Comparator.comparing(Transition::getState)
+    ;
 
     /**
      * Comparator by cost.
      */
-    public static final Comparator<Transition> BY_COST = (t1, t2) -> {
-        if (t1 == null && t2 == null) return 0;
-        if (t1 == null) return 1;
-        if (t2 == null) return -1;
-        return Double.compare(t1.getCost(), t2.getCost());
-    };
+    public static final Comparator<Transition> BY_COST = Comparator.comparingDouble(Transition::getCost);
 }

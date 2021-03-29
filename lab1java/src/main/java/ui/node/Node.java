@@ -123,20 +123,10 @@ public class Node {
     /**
      * Comparator by the state name.
      */
-    public static final Comparator<Node> BY_NAME = (n1, n2) -> {
-        if (n1 == null && n2 == null) return 0;
-        if (n1 == null) return 1;
-        if (n2 == null) return -1;
-        return n1.getState().compareTo(n2.getState());
-    };
+    public static final Comparator<Node> BY_NAME = Comparator.comparing(Node::getState);
 
     /**
      * Comparator by the cost.
      */
-    public static final Comparator<Node> BY_COST= (n1, n2) -> {
-        if (n1 == null && n2 == null) return 0;
-        if (n2 == null) return -1;
-        if (n1 == null) return 1;
-        return Double.compare(n1.getCost(), n2.getCost());
-    };
+    public static final Comparator<Node> BY_COST = Comparator.comparingDouble(Node::getCost);
 }

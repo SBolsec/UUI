@@ -1,5 +1,6 @@
 package ui.search;
 
+import ui.Utils;
 import ui.node.Node;
 
 import java.util.Optional;
@@ -37,5 +38,20 @@ public class SearchResult {
      */
     public int getStatesVisited() {
         return statesVisited;
+    }
+
+    @Override
+    public String toString() {
+        if (getNode().isEmpty()) {
+            return "[FOUND_SOLUTION]: no\n";
+        }
+        StringBuilder sb = new StringBuilder();
+        Node node = getNode().get();
+        sb.append("[FOUND_SOLUTION]: yes\n");
+        sb.append("[STATES_VISITED]: ").append(getStatesVisited()).append("\n");
+        sb.append("[PATH_LENGTH]: ").append(node.getDepth()).append("\n");
+        sb.append("[TOTAL_COST]: ").append(String.format("%.1f\n", node.getCost()));
+        sb.append("[PATH]: " + Utils.getPathAsString(node.getPath()));
+        return sb.toString();
     }
 }

@@ -8,6 +8,10 @@ import ui.search.SearchResult;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  * Holds methods which check different aspects of a heuristic function
@@ -24,8 +28,9 @@ public class Checker {
         HeuristicFunctionDescriptor hfd = new HeuristicFunctionDescriptor(pathToHeuristicFunctionDescriptor);
 
         boolean optimistic = true;
-        for (Map.Entry<String, Double> entry : hfd.getHeuristics().entrySet()) {
-            // find the real cost using bfs
+        Map<String, Double> sortedMap = new TreeMap<>(hfd.getHeuristics());
+        for (Map.Entry<String, Double> entry : sortedMap.entrySet()) {
+            // find the real cost using ucs
             SearchResult result = Algorithms.ucs(entry.getKey(), ssd.SUCCESSOR, ssd.GOAL);
             double realCost = result.getNode().get().getCost();
 
@@ -59,8 +64,11 @@ public class Checker {
         HeuristicFunctionDescriptor hfd = new HeuristicFunctionDescriptor(pathToHeuristicFunctionDescriptor);
 
         boolean consistent = true;
-        for (Map.Entry<String, Double> entry : hfd.getHeuristics().entrySet()) {
-            for (Transition t : ssd.getTransitions().get(entry.getKey())) {
+        Map<String, Double> sortedMap = new TreeMap<>(hfd.getHeuristics());
+        for (Map.Entry<String, Double> entry : sortedMap.entrySet()) {
+            Set<Transition> transitions = new TreeSet<>(Transition.BY_NAME);
+            transitions.addAll(ssd.getTransitions().get(entry.getKey()));
+            for (Transition t : transitions) {
                 double h = hfd.HEURISTIC.apply(t.getState());
 
                 // form the output string

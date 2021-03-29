@@ -20,7 +20,7 @@ public class StateSpaceDescriptor {
     /** Set of final states */
     private Set<String> finalStates;
     /** Transitions between states */
-    private Map<String, List<Transition>> transitions;
+    private Map<String, Set<Transition>> transitions;
 
     /**
      * Constructor which initializes the state space from a file.
@@ -44,8 +44,7 @@ public class StateSpaceDescriptor {
 
         // parse the lines
         initialState = lines.get(0);
-        finalStates = Arrays.stream(lines.get(1).split(" "))
-                .collect(Collectors.toSet());
+        finalStates = Arrays.stream(lines.get(1).split(" ")).collect(Collectors.toCollection(HashSet::new));
 
         transitions = new HashMap<>();
         for (int i = 0, n = lines.size(); i < n; i++) {
@@ -55,13 +54,11 @@ public class StateSpaceDescriptor {
             String[] l = lines.get(i).split(" ");
             String state = l[0].substring(0, l[0].length() - 1); // remove the colon
 
-            List<Transition> t = new ArrayList<>();
+            Set<Transition> t = new HashSet<>();
             for (int j = 1; j < l.length; j++) {
                 String[] s = l[j].split(",");
                 t.add(new Transition(s[0], Double.parseDouble(s[1])));
             }
-            Collections.sort(t, (t1, t2) -> t1.getState().compareTo(t2.getState()));
-
             this.transitions.put(state, t);
         }
     }
@@ -79,24 +76,27 @@ public class StateSpaceDescriptor {
      * @return set of final states
      */
     public Set<String> getFinalStates() {
-        return Collections.unmodifiableSet(finalStates);
+        return finalStates;
     }
 
     /**
      * Returns unmodifiable map of transitions.
      * @return map of transitions
      */
-    public Map<String, List<Transition>> getTransitions() {
-        return Collections.unmodifiableMap(transitions);
+    public Map<String, Set<Transition>> getTransitions() {
+        return transitions;
     }
 
     /**
-     * Return set of successors based on given state.
+     * Return set of successors based on given state sorted by state name.
      */
-    public final Function<String, Set<Transition>> SUCCESSOR = state ->
+    public final Function<String, List<Transition>> SUCCESSOR_BY_NAME = state ->
             getTransitions().get(state).stream()
-                .map(s -> (Transition) s)
-                .collect(Collectors.toSet());
+                    .sorted(Transition.BY_NAME)
+                    .collect(Collectors.toList());
+
+    public final Function<String, Set<Transition>> SUCCESSOR = state ->
+            getTransitions().get(state);
 
     /**
      * Checks whether the given state is in the set of final states.
