@@ -39,6 +39,6 @@ public class Utils {
      * @return string representation of path
      */
     public static String getPathAsString(List<Node> path) {
-        return String.join(" => ", path.stream().map(node -> node.getState().getName()).collect(Collectors.toList()));
+        return String.join(" => ", path.stream().map(node -> node.getState()).collect(Collectors.toList()));
     }
 }

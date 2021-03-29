@@ -1,6 +1,5 @@
 package ui.search;
 
-import ui.data.State;
 import ui.data.Transition;
 import ui.node.HeuristicNode;
 import ui.node.Node;
@@ -21,10 +20,10 @@ public class Algorithms {
      * @param goal goal function
      * @return result of search
      */
-    public static SearchResult bfs(State s0, Function<State, Set<Transition>> succ, Predicate<State> goal) {
+    public static SearchResult bfs(String s0, Function<String, Set<Transition>> succ, Predicate<String> goal) {
         List<Node> open = new LinkedList<>();
         open.add(new Node(s0));
-        Set<State> visited = new HashSet<>();
+        Set<String> visited = new HashSet<>();
 
         int statesVisited = 0;
 
@@ -51,10 +50,10 @@ public class Algorithms {
      * @param goal goal function
      * @return result of search
      */
-    public static SearchResult ucs(State s0, Function<State, Set<Transition>> succ, Predicate<State> goal) {
+    public static SearchResult ucs(String s0, Function<String, Set<Transition>> succ, Predicate<String> goal) {
         Queue<Node> open = new PriorityQueue<>(Node.BY_COST.thenComparing(Node.BY_NAME));
         open.add(new Node(s0));
-        Set<State> visited = new HashSet<>();
+        Set<String> visited = new HashSet<>();
 
         int statesVisited = 0;
 
@@ -101,10 +100,10 @@ public class Algorithms {
      * @param h heuristic function
      * @return result of search
      */
-    public static SearchResult astar(State s0, Function<State, Set<Transition>> succ, Predicate<State> goal, Function<State, Double> h) {
+    public static SearchResult astar(String s0, Function<String, Set<Transition>> succ, Predicate<String> goal, Function<String, Double> h) {
         Queue<HeuristicNode> open = new PriorityQueue<>(HeuristicNode.BY_TOTAL_COST.thenComparing(HeuristicNode.BY_NAME));
         open.add(new HeuristicNode(s0, h.apply(s0)));
-        Set<State> closed = new HashSet<>();
+        Set<String> closed = new HashSet<>();
 
         int statesVisited = 0;
 

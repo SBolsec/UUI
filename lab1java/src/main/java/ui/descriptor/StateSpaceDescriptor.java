@@ -1,7 +1,6 @@
 package ui.descriptor;
 
 import ui.Utils;
-import ui.data.State;
 import ui.data.Transition;
 
 import java.io.IOException;
@@ -17,11 +16,11 @@ import java.util.stream.Collectors;
  */
 public class StateSpaceDescriptor {
     /** Initial state */
-    private State initialState;
+    private String initialState;
     /** Set of final states */
-    private Set<State> finalStates;
+    private Set<String> finalStates;
     /** Transitions between states */
-    private Map<State, List<Transition>> transitions;
+    private Map<String, List<Transition>> transitions;
 
     /**
      * Constructor which initializes the state space from a file.
@@ -44,9 +43,8 @@ public class StateSpaceDescriptor {
             throw new IllegalArgumentException("File must contain at least 3 lines: initial state, final states and transitions!");
 
         // parse the lines
-        initialState = new State(lines.get(0));
+        initialState = lines.get(0);
         finalStates = Arrays.stream(lines.get(1).split(" "))
-                .map(s -> new State(s))
                 .collect(Collectors.toSet());
 
         transitions = new HashMap<>();
@@ -60,11 +58,11 @@ public class StateSpaceDescriptor {
             List<Transition> t = new ArrayList<>();
             for (int j = 1; j < l.length; j++) {
                 String[] s = l[j].split(",");
-                t.add(new Transition(new State(s[0]), Double.parseDouble(s[1])));
+                t.add(new Transition(s[0], Double.parseDouble(s[1])));
             }
             Collections.sort(t, (t1, t2) -> t1.getState().compareTo(t2.getState()));
 
-            this.transitions.put(new State(state), t);
+            this.transitions.put(state, t);
         }
     }
 
@@ -72,7 +70,7 @@ public class StateSpaceDescriptor {
      * Returns the initial state.
      * @return initial state
      */
-    public State getInitialState() {
+    public String getInitialState() {
         return initialState;
     }
 
@@ -80,7 +78,7 @@ public class StateSpaceDescriptor {
      * Returns unmodifiable set of final states.
      * @return set of final states
      */
-    public Set<State> getFinalStates() {
+    public Set<String> getFinalStates() {
         return Collections.unmodifiableSet(finalStates);
     }
 
@@ -88,14 +86,14 @@ public class StateSpaceDescriptor {
      * Returns unmodifiable map of transitions.
      * @return map of transitions
      */
-    public Map<State, List<Transition>> getTransitions() {
+    public Map<String, List<Transition>> getTransitions() {
         return Collections.unmodifiableMap(transitions);
     }
 
     /**
      * Return set of successors based on given state.
      */
-    public final Function<State, Set<Transition>> SUCCESSOR = state ->
+    public final Function<String, Set<Transition>> SUCCESSOR = state ->
             getTransitions().get(state).stream()
                 .map(s -> (Transition) s)
                 .collect(Collectors.toSet());
@@ -103,5 +101,5 @@ public class StateSpaceDescriptor {
     /**
      * Checks whether the given state is in the set of final states.
      */
-    public final Predicate<State> GOAL = state -> getFinalStates().contains(state);
+    public final Predicate<String> GOAL = state -> getFinalStates().contains(state);
 }

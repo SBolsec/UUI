@@ -1,7 +1,5 @@
 package ui.node;
 
-import ui.data.State;
-
 import java.util.Comparator;
 
 /**
@@ -16,7 +14,7 @@ public class HeuristicNode extends Node {
      * @param state state
      * @param totalCost total cost
      */
-    public HeuristicNode(State state, double totalCost) {
+    public HeuristicNode(String state, double totalCost) {
         this(null, state, 0, totalCost);
     }
 
@@ -27,7 +25,7 @@ public class HeuristicNode extends Node {
      * @param cost cost
      * @param totalCost total cost
      */
-    public HeuristicNode(Node parent, State state, double cost, double totalCost) {
+    public HeuristicNode(Node parent, String state, double cost, double totalCost) {
         super(parent, state, cost);
         this.totalCost = totalCost;
     }

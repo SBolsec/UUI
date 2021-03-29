@@ -8,7 +8,7 @@ import java.util.Objects;
  */
 public class Transition {
     /** Destination state */
-    private State state;
+    private String state;
     /** Cost of transition */
     private double cost;
 
@@ -17,7 +17,7 @@ public class Transition {
      * @param state destination state
      * @param cost cost of transition
      */
-    public Transition(State state, double cost) {
+    public Transition(String state, double cost) {
         this.state = state;
         this.cost = cost;
     }
@@ -26,7 +26,7 @@ public class Transition {
      * Returns the destination state.
      * @return destination state
      */
-    public State getState() {
+    public String getState() {
         return state;
     }
 
@@ -76,7 +76,7 @@ public class Transition {
         if (t1 == null && t2 == null) return 0;
         if (t1 == null) return 1;
         if (t2 == null) return -1;
-        return t1.getState().getName().compareTo(t2.getState().getName());
+        return t1.getState().compareTo(t2.getState());
     };
 
     /**

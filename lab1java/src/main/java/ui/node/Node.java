@@ -1,6 +1,5 @@
 package ui.node;
 
-import ui.data.State;
 import ui.data.Transition;
 
 import java.util.ArrayList;
@@ -21,7 +20,7 @@ public class Node {
      * Initializes node with no parent and sets cost to 0.
      * @param state state
      */
-    public Node(State state) {
+    public Node(String state) {
         this(null, state, 0);
     }
 
@@ -31,7 +30,7 @@ public class Node {
      * @param state state
      * @param cost cost
      */
-    public Node(Node parent, State state, double cost) {
+    public Node(Node parent, String state, double cost) {
         this.parent = parent;
         this.transition = new Transition(state, cost);
     }
@@ -56,7 +55,7 @@ public class Node {
      * Returns the state
      * @return state
      */
-    public State getState() {
+    public String getState() {
         return transition.getState();
     }
 
@@ -128,7 +127,7 @@ public class Node {
         if (n1 == null && n2 == null) return 0;
         if (n1 == null) return 1;
         if (n2 == null) return -1;
-        return n1.getState().getName().compareTo(n2.getState().getName());
+        return n1.getState().compareTo(n2.getState());
     };
 
     /**

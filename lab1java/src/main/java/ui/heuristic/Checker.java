@@ -1,6 +1,5 @@
 package ui.heuristic;
 
-import ui.data.State;
 import ui.data.Transition;
 import ui.descriptor.HeuristicFunctionDescriptor;
 import ui.descriptor.StateSpaceDescriptor;
@@ -25,7 +24,7 @@ public class Checker {
         HeuristicFunctionDescriptor hfd = new HeuristicFunctionDescriptor(pathToHeuristicFunctionDescriptor);
 
         boolean optimistic = true;
-        for (Map.Entry<State, Double> entry : hfd.getHeuristics().entrySet()) {
+        for (Map.Entry<String, Double> entry : hfd.getHeuristics().entrySet()) {
             // find the real cost using bfs
             SearchResult result = Algorithms.ucs(entry.getKey(), ssd.SUCCESSOR, ssd.GOAL);
             double realCost = result.getNode().get().getCost();
@@ -60,7 +59,7 @@ public class Checker {
         HeuristicFunctionDescriptor hfd = new HeuristicFunctionDescriptor(pathToHeuristicFunctionDescriptor);
 
         boolean consistent = true;
-        for (Map.Entry<State, Double> entry : hfd.getHeuristics().entrySet()) {
+        for (Map.Entry<String, Double> entry : hfd.getHeuristics().entrySet()) {
             for (Transition t : ssd.getTransitions().get(entry.getKey())) {
                 double h = hfd.HEURISTIC.apply(t.getState());
 

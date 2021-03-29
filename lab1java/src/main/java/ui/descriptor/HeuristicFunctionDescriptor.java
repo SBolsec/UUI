@@ -1,7 +1,6 @@
 package ui.descriptor;
 
 import ui.Utils;
-import ui.data.State;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
  */
 public class HeuristicFunctionDescriptor {
     /** Map that stores heuristics for all states */
-    private Map<State, Double> heuristics;
+    private Map<String, Double> heuristics;
 
     /**
      * Constructor which initializes the heuristics from provided file.
@@ -40,7 +39,7 @@ public class HeuristicFunctionDescriptor {
         for (int i = 0, n = lines.size(); i < n; i++) {
             String[] s = lines.get(i).split(" ");
             // remove the colon from the state name
-            heuristics.put(new State(s[0].substring(0, s[0].length() - 1)), Double.parseDouble(s[1]));
+            heuristics.put(s[0].substring(0, s[0].length() - 1), Double.parseDouble(s[1]));
         }
     }
 
@@ -48,9 +47,9 @@ public class HeuristicFunctionDescriptor {
      * Returns the heuristics
      * @return map of heuristics
      */
-    public Map<State, Double> getHeuristics() {
+    public Map<String, Double> getHeuristics() {
         return Collections.unmodifiableMap(heuristics);
     }
 
-    public final Function<State, Double> HEURISTIC = state -> getHeuristics().get(state);
+    public final Function<String, Double> HEURISTIC = state -> getHeuristics().get(state);
 }
