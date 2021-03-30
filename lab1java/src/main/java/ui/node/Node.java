@@ -1,11 +1,9 @@
 package ui.node;
 
+import ui.Utils;
 import ui.data.Transition;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Models a node in the search tree
@@ -108,7 +106,7 @@ public class Node {
      * @return path from start to this node
      */
     public List<Node> getPath() {
-        List<Node> path = new ArrayList<>();
+        List<Node> path = new LinkedList<>();
 
         path.add(this);
         Node node = getParent();
@@ -120,10 +118,19 @@ public class Node {
         return path;
     }
 
+    public String getPathString() {
+        return Utils.getPathAsString(getPath());
+    }
+
     /**
      * Comparator by the state name.
      */
     public static final Comparator<Node> BY_NAME = Comparator.comparing(Node::getState);
+
+    /**
+     * Comparator by the state name.
+     */
+    public static final Comparator<Node> BY_PATH = Comparator.comparing(Node::getPathString);
 
     /**
      * Comparator by the cost.
