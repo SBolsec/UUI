@@ -125,5 +125,4 @@ public class Solution {
 			Checker.checkConsistent(pathToStateSpaceDescriptor, pathToHeuristicFunctionDescriptor);
 		}
 	}
-
 }

@@ -35,7 +35,7 @@ public class HeuristicNode extends Node {
     }
 
     /**
-     * Returns the total cost
+     * Returns the total cost.
      *
      * @return totalCost
      */
@@ -43,6 +43,9 @@ public class HeuristicNode extends Node {
         return totalCost;
     }
 
+    /**
+     * Comparator by the total estimated cost.
+     */
     public static final Comparator<HeuristicNode> BY_TOTAL_COST = Comparator.comparingDouble(HeuristicNode::getTotalCost);
 }
 

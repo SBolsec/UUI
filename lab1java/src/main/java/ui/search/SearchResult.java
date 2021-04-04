@@ -40,6 +40,10 @@ public class SearchResult {
         return statesVisited;
     }
 
+    /**
+     * Returns a string representation of the search result.
+     * @return string representation of search result
+     */
     @Override
     public String toString() {
         if (getNode().isEmpty()) {

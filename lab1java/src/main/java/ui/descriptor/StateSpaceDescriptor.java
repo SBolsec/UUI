@@ -88,13 +88,16 @@ public class StateSpaceDescriptor {
     }
 
     /**
-     * Return set of successors based on given state sorted by state name.
+     * Returns list of successors based on given state sorted by state name.
      */
     public final Function<String, List<Transition>> SUCCESSOR_BY_NAME = state ->
             getTransitions().get(state).stream()
                     .sorted(Transition.BY_NAME)
                     .collect(Collectors.toList());
 
+    /**
+     * Returns set of successors based on given state
+     */
     public final Function<String, Set<Transition>> SUCCESSOR = state ->
             getTransitions().get(state);
 

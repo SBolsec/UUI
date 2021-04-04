@@ -66,6 +66,7 @@ public class Algorithms {
     public static SearchResult ucs(String s0, Function<String, Set<Transition>> succ, Predicate<String> goal) {
         Queue<Node> open = new PriorityQueue<>(Node.BY_COST.thenComparing(Node.BY_NAME));
         Set<String> visited = new HashSet<>();
+        // with this set we sacrifice some memory for the sake of a lot of speed
         Set<String> openSet = new HashSet<>();
 
         open.add(new Node(s0));
@@ -83,10 +84,12 @@ public class Algorithms {
             visited.add(n.getState());
 
             for (Transition m : succ.apply(n.getState())) {
+                // continue if this state has already been visited
                 if (visited.contains(m.getState())) {
                     continue;
                 }
 
+                // if this state is not in open then there is no need to search for it in open
                 if (!openSet.contains(m.getState())) {
                     open.offer(new Node(n, m.getState(), m.getCost() + n.getCost()));
                     openSet.add(m.getState());
@@ -103,6 +106,7 @@ public class Algorithms {
                     if (o.getState().equals(m.getState())) {
                         if (o.getCost() <= cost) {
                             seenCheaper = true;
+                            break;
                         } else {
                             it.remove();
                             break;
@@ -129,9 +133,12 @@ public class Algorithms {
      */
     public static SearchResult astar(String s0, Function<String, Set<Transition>> succ, Predicate<String> goal, Function<String, Double> h) {
         Queue<HeuristicNode> open = new PriorityQueue<>(HeuristicNode.BY_TOTAL_COST.thenComparing(HeuristicNode.BY_NAME));
-        open.add(new HeuristicNode(s0, h.apply(s0)));
         Set<String> closed = new HashSet<>();
+        // with this set we sacrifice some memory for the sake of a lot of speed
         Set<String> openSet = new HashSet<>();
+
+        open.add(new HeuristicNode(s0, h.apply(s0)));
+        openSet.add(s0);
 
         int statesVisited = 0;
 
@@ -174,6 +181,7 @@ public class Algorithms {
                             break;
                         } else {
                             it.remove();
+                            break;
                         }
                     }
                 }

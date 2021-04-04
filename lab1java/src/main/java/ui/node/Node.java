@@ -118,6 +118,10 @@ public class Node {
         return path;
     }
 
+    /**
+     * Get path as string.
+     * @return string representation of the path
+     */
     public String getPathString() {
         return Utils.getPathAsString(getPath());
     }
@@ -126,11 +130,6 @@ public class Node {
      * Comparator by the state name.
      */
     public static final Comparator<Node> BY_NAME = Comparator.comparing(Node::getState);
-
-    /**
-     * Comparator by the state name.
-     */
-    public static final Comparator<Node> BY_PATH = Comparator.comparing(Node::getPathString);
 
     /**
      * Comparator by the cost.

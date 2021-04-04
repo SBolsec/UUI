@@ -51,5 +51,8 @@ public class HeuristicFunctionDescriptor {
         return heuristics;
     }
 
+    /**
+     * Returns the heuristic for the given state
+     */
     public final Function<String, Double> HEURISTIC = state -> getHeuristics().get(state);
 }

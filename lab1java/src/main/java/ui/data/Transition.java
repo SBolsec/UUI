@@ -72,8 +72,7 @@ public class Transition {
     /**
      * Comparator by state name.
      */
-    public static final Comparator<Transition> BY_NAME = Comparator.comparing(Transition::getState)
-    ;
+    public static final Comparator<Transition> BY_NAME = Comparator.comparing(Transition::getState);
 
     /**
      * Comparator by cost.
