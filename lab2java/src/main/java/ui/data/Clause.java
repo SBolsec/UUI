@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 public class Clause {
     /** Literals that make up this clause */
-    List<Literal> literals;
+    Set<Literal> literals;
     /** Flags whether the clause has been resolved */
     boolean resolved = false;
 
@@ -13,7 +13,7 @@ public class Clause {
      * Constructor which sets set of literals.
      * @param literals set of literals
      */
-    public Clause(List<Literal> literals) {
+    public Clause(Set<Literal> literals) {
         this.literals = literals;
     }
 
@@ -28,15 +28,15 @@ public class Clause {
 
         this.literals = Arrays.stream(input.toLowerCase().split("\\s+v\\s+"))
                 .map(s -> new Literal(s))
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     /**
-     * Returns unmodifiable list of literals.
-     * @return unmodifiable list of literals
+     * Returns unmodifiable set of literals.
+     * @return unmodifiable set of literals
      */
-    public List<Literal> getLiterals() {
-        return Collections.unmodifiableList(literals);
+    public Set<Literal> getLiterals() {
+        return Collections.unmodifiableSet(literals);
     }
 
     /**
@@ -84,7 +84,7 @@ public class Clause {
     @Override
     public String toString() {
         return literals.stream()
-                .sorted((a,b) -> a.getName().compareTo(b.getName()))
+                .sorted(Comparator.comparing(Literal::getName))
                 .map(a -> a.toString())
                 .collect(Collectors.joining(" v "));
     }

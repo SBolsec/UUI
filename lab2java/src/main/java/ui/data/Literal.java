@@ -58,14 +58,16 @@ public class Literal {
     }
 
     /**
-     * Checks whether two literal are equal only by name.
+     * Checks whether two literal are equal.
      * @param o object to test
      * @return true if objects are equal, false otherwise
      */
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Literal)) return false;
-        return this.getName().equals(((Literal) o).getName());
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Literal literal = (Literal) o;
+        return negated == literal.negated && Objects.equals(name, literal.name);
     }
 
     /**
