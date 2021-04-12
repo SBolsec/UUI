@@ -131,6 +131,21 @@ public class Resolution {
                         return;
                     }
 
+                    Iterator<Clause> it = clauses.iterator();
+                    while (it.hasNext()) {
+                        Clause clause = it.next();
+                        if (clause.getLiterals().containsAll(c.getLiterals())) {
+                            it.remove();
+                        }
+                    }
+                    it = sos.iterator();
+                    while (it.hasNext()) {
+                        Clause clause = it.next();
+                        if (clause.getLiterals().containsAll(c.getLiterals())) {
+                            it.remove();
+                        }
+                    }
+
                     sos.add(c);
                     somethingAdded = true;
                 }
