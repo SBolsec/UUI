@@ -3,8 +3,10 @@ package ui;
 import ui.data.Clause;
 import ui.data.ClausePair;
 import ui.data.Literal;
+import ui.data.Node;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Class that stores resolution algorithms
@@ -12,11 +14,13 @@ import java.util.*;
 public class Resolution {
 
     public static Map<Clause, Set<Clause>> resolved = new HashMap<>();
+    public static Set<Node> nodes = new HashSet<>();
 
     public static void resolutionByRefutation(List<Clause> initialClauses, Clause last) {
         Set<Clause> clauses = new HashSet<>();
         Set<Clause> sos = new HashSet<>();
-        sos.addAll(negateClause(last));
+        Set<Clause> negatedFinalClause = negateClause(last);
+        sos.addAll(negatedFinalClause);
 
         initialClauses.forEach(c -> {
             // check for tautology, do not add tautology
@@ -43,7 +47,87 @@ public class Resolution {
 
                 for (Clause c : resolvents) {
                     if (c.getLiterals().contains(Literal.NIL)) {
+                        // Find node that has NIL
+                        List<Node> resNodes = new ArrayList<>();
+                        for (Node node : nodes) {
+                            if (node.getClause().getLiterals().contains(Literal.NIL)) {
+                                resNodes.add(node);
+                                break;
+                            }
+                        }
+                        // Find all the nodes that lead to NIL
+                        Queue<Node> pathNodes = new PriorityQueue<>((a,b) -> a.toString().compareTo(b.toString()));
+                        pathNodes.offer(resNodes.get(0));
+                        while (!pathNodes.isEmpty()) {
+                            Node n = pathNodes.poll();
+                            for (Node node : nodes) {
+                                if (node.getClause().equals(n.getParent1()) || node.getClause().equals(n.getParent2())) {
+                                    resNodes.add(node);
+                                    pathNodes.offer(node);
+                                }
+                            }
+                        }
+                        List<Clause> pathClauses = new ArrayList<>();
+                        List<Node> firstResolved = new ArrayList<>();
+                        // find all the clauses that were known from the start
+                        Set<Node> premise = new HashSet<>();
+                        for (Node node : resNodes) {
+                            if ((initialClauses.contains(node.getParent1()) || negatedFinalClause.contains(node.getParent1())) &&
+                                 initialClauses.contains(node.getParent2()) || negatedFinalClause.contains(node.getParent2())) {
+                                if (!pathClauses.contains(node.getParent1()))
+                                    pathClauses.add(node.getParent1());
+                                if (!pathClauses.contains(node.getParent2()))
+                                    pathClauses.add(node.getParent2());
+                                if (!firstResolved.contains(node.getClause()))
+                                    firstResolved.add(node);
+                                premise.add(node);
+                            }
+                            if (initialClauses.contains(node.getParent1()) || negatedFinalClause.contains(node.getParent1())) {
+                                if (!pathClauses.contains(node.getParent1()))
+                                    pathClauses.add(node.getParent1());
+                            }
+                            if (initialClauses.contains(node.getParent2()) || negatedFinalClause.contains(node.getParent2())) {
+                                if (!pathClauses.contains(node.getParent2()))
+                                    pathClauses.add(node.getParent2());
+                            }
+                        }
+                        StringBuilder sb = new StringBuilder();
+                        int i = 0;
+                        for (i = 0; i < pathClauses.size(); i++) {
+                            sb.append(i+1).append(". ").append(pathClauses.get(i)).append("\n");
+                        }
+                        sb.append("===============\n");
+
+                        resNodes.removeAll(premise);
+                        pathClauses.addAll(firstResolved.stream().map(a -> a.getClause()).collect(Collectors.toList()));
+                        for (int j = 0; j < firstResolved.size(); j++) {
+                            Node node = firstResolved.get(j);
+                            sb.append(i+1).append(". ").append(node.getClause()).append(" (");
+                            sb.append(pathClauses.indexOf(node.getParent1())+1).append(", ");
+                            sb.append(pathClauses.indexOf(node.getParent2())+1).append(")\n");
+                            i++;
+                        }
+
+
+                        outer: while (!resNodes.isEmpty()) {
+                            Iterator<Node> it = resNodes.iterator();
+                            while (it.hasNext()) {
+                                Node node = it.next();
+                                if (pathClauses.contains(node.getParent1()) && pathClauses.contains(node.getParent2())) {
+                                    pathClauses.add(node.getClause());
+                                    it.remove();
+                                    sb.append(i+1).append(". ").append(node.getClause()).append(" (");
+                                    sb.append(pathClauses.indexOf(node.getParent1())+1).append(", ");
+                                    sb.append(pathClauses.indexOf(node.getParent2())+1).append(")\n");
+                                    i++;
+                                    continue outer;
+                                }
+                            }
+                        }
+                        sb.append("===============");
+                        System.out.println(sb.toString());
                         System.out.println("[CONCLUSION]: " + last + " is true");
+
                         return;
                     }
 
@@ -142,7 +226,9 @@ public class Resolution {
         res.remove(new Literal(literal.isNegated() ? literal.getName() : "~" + literal.getName()));
 
         if (res.isEmpty()) {
-            return new Clause(new HashSet<>(Arrays.asList(Literal.NIL)));
+            Clause nil = new Clause(new HashSet<>(Arrays.asList(Literal.NIL)));
+            nodes.add(new Node(nil, c1, c2));
+            return nil;
         }
 
         Clause result = new Clause(res);
@@ -170,6 +256,7 @@ public class Resolution {
             }
         }
 
+        nodes.add(new Node(result, c1, c2));
         return result;
     }
 }
