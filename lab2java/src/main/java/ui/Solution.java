@@ -22,26 +22,30 @@ public class Solution {
 		}
 
 		switch (args[0].toLowerCase()) {
-			case "resolution": {
+			case "resolution" -> {
+				// check arguments
 				if (args.length != 2) {
 					System.err.println("Invalid arguments!");
 					System.exit(1);
 				}
+				// load clauses from file
 				ClausesList cl = new ClausesList(args[1]);
 				List<Clause> clauses = cl.getClauses();
-				Resolution.resolutionByRefutation(clauses.subList(0, clauses.size()-1), clauses.get(clauses.size()-1));
-				break;
+				// start the resolution
+				Resolution resolution = new Resolution();
+				resolution.resolutionByRefutation(clauses.subList(0, clauses.size() - 1), clauses.get(clauses.size() - 1));
 			}
-			case "cooking": {
+			case "cooking" -> {
+				// check arguments
 				if (args.length != 3) {
 					System.err.println("Invalid arguments!");
 					System.exit(1);
 				}
-				break;
 			}
-			default:
+			default -> {
 				System.err.println("Invalid argument! Supported arguments are: resolution, cooking");
 				System.exit(1);
+			}
 		}
 	}
 

@@ -3,11 +3,12 @@ package ui.data;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Represents a clause which consists of a set of literals.
+ */
 public class Clause {
     /** Literals that make up this clause */
     Set<Literal> literals;
-    /** Flags whether the clause has been resolved */
-    boolean resolved = false;
 
     /**
      * Constructor which sets set of literals.
@@ -26,8 +27,9 @@ public class Clause {
         if (input == null || input.isEmpty())
             throw new IllegalArgumentException("Input string was empty or null");
 
-        this.literals = Arrays.stream(input.toLowerCase().split("\\s+v\\s+"))
-                .map(s -> new Literal(s))
+        // create set of literals from given string
+        this.literals = Arrays.stream(input.toLowerCase().trim().split("\\s+v\\s+"))
+                .map(Literal::new)
                 .collect(Collectors.toSet());
     }
 
@@ -37,22 +39,6 @@ public class Clause {
      */
     public Set<Literal> getLiterals() {
         return Collections.unmodifiableSet(literals);
-    }
-
-    /**
-     * Returns whether this clause is resolved
-     * @return true if this clause is resolved, false otherwise
-     */
-    public boolean isResolved() {
-        return resolved;
-    }
-
-    /**
-     * Sets resolved flag
-     * @param resolved flag to set
-     */
-    public void setResolved(boolean resolved) {
-        this.resolved = resolved;
     }
 
     /**
@@ -85,7 +71,7 @@ public class Clause {
     public String toString() {
         return literals.stream()
                 .sorted(Comparator.comparing(Literal::getName))
-                .map(a -> a.toString())
+                .map(Literal::toString)
                 .collect(Collectors.joining(" v "));
     }
 }

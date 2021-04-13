@@ -23,12 +23,14 @@ public class ClausesList {
      * @throws IOException if there is a problem while reading the file
      */
     public ClausesList(String filePath) throws IOException {
+        // check provided file path
         Path file = Utils.checkFilePath(filePath);
 
+        // read all lines except comments and create list of clauses
         List<String> lines = Files.readAllLines(file);
-        for (int i = 0, n = lines.size(); i < n; i++) {
-            if (lines.get(i).trim().startsWith("#")) continue;
-            clauses.add(new Clause(lines.get(i).trim()));
+        for (String line : lines) {
+            if (line.trim().startsWith("#")) continue;
+            clauses.add(new Clause(line.trim()));
         }
     }
 
@@ -38,5 +40,14 @@ public class ClausesList {
      */
     public List<Clause> getClauses() {
         return clauses;
+    }
+
+    /**
+     * Returns string representation of all clauses.
+     * @return string representation of all clauses
+     */
+    @Override
+    public String toString() {
+        return clauses.stream().map(Clause::toString).collect(Collectors.joining(", ", "(", ")"));
     }
 }

@@ -8,9 +8,9 @@ import java.util.Objects;
  */
 public class Literal {
     /** Name of the literal */
-    private String name;
+    private final String name;
     /** Flag whether the literal is negated */
-    private boolean negated;
+    private final boolean negated;
     /** NIL literal */
     public static final Literal NIL = new Literal("NIL");
 
