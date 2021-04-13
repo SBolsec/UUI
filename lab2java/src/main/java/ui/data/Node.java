@@ -7,11 +7,11 @@ import java.util.Objects;
  */
 public class Node {
     /** Clause that was resolved */
-    private Clause clause;
+    private final Clause clause;
     /** First parent clause  */
-    private Clause parent1;
+    private final Clause parent1;
     /** Second parent clause */
-    private Clause parent2;
+    private final Clause parent2;
 
     /**
      * Constructor.
