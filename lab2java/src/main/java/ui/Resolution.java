@@ -23,7 +23,7 @@ public class Resolution {
      * @param initialClauses list of initial clauses
      * @param last clause which the procedure wants to test
      */
-    public void resolutionByRefutation(List<Clause> initialClauses, Clause last) {
+    public boolean resolutionByRefutation(List<Clause> initialClauses, Clause last) {
         // initialize data structures
         resolved = new HashMap<>(); // map of resolved clauses that will keep track of everything that has been tried
         nodes = new HashSet<>(); // set of nodes used to trace back the resolution procedure
@@ -46,7 +46,7 @@ public class Resolution {
                     // if NIL is found, the procedure is done and the output is generated
                     if (c.getLiterals().contains(Literal.NIL)) {
                         printResult(initialClauses, last, negatedFinalClause);
-                        return;
+                        return true;
                     }
 
                     // removing redundant clauses using the absorption equivalence: F && (F || G) === F
@@ -71,8 +71,8 @@ public class Resolution {
             }
 
             if (!somethingAdded) { // if nothing was added, the procedure stops
-                System.out.println("[CONCLUSION]: " + last + " is unknown");
-                return;
+                printError(initialClauses, last, negatedFinalClause);
+                return false;
             }
         }
     }
@@ -337,5 +337,23 @@ public class Resolution {
         sb.append("===============");
         System.out.println(sb.toString());
         System.out.println("[CONCLUSION]: " + last + " is true");
+    }
+
+    /**
+     * Prints error message.
+     * @param initialClauses set of initial clauses
+     * @param last last clause
+     * @param negatedFinalClause set of negated clauses generated from last clause
+     */
+    private void printError(List<Clause> initialClauses, Clause last, Set<Clause> negatedFinalClause) {
+        int i = 1;
+        for (Clause c : initialClauses) {
+            System.out.println(i++ + ". " + c);
+        }
+        for (Clause c : negatedFinalClause) {
+            System.out.println(i++ + ". " + c);
+        }
+        System.out.println("===============");
+        System.out.println("[CONCLUSION]: " + last + " is unknown");
     }
 }
