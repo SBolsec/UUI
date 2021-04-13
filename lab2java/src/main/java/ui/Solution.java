@@ -41,6 +41,8 @@ public class Solution {
 					System.err.println("Invalid arguments!");
 					System.exit(1);
 				}
+				CookBook cookbook = new CookBook(args[1], args[2]);
+				cookbook.run();
 			}
 			default -> {
 				System.err.println("Invalid argument! Supported arguments are: resolution, cooking");
