@@ -29,13 +29,39 @@ public class DecisionTree {
             return;
         }
 
+        List<String> targetValues = new ArrayList<>(trainSet.getTargetValues());
+        int n = targetValues.size();
+        int[][] confusionMatrix = new int[n][n];
+        int correct = 0;
+
         StringBuilder predictions = new StringBuilder();
         for (DataEntry entry : dataset.getData()) {
             String prediction = getPrediction(rootNode, entry, trainSet.getData());
             predictions.append(prediction).append(" ");
+
+            String correctValue = entry.getDatapoint(trainSet.getTargetVariable()).getValue();
+            if (prediction.equals(correctValue)) correct++;
+
+            int x = targetValues.indexOf(correctValue);
+            int y = targetValues.indexOf(prediction);
+            confusionMatrix[x][y]++;
         }
 
+        double accuracy = (double) correct / dataset.getData().size();
+
         System.out.println("[PREDICTIONS]: " + predictions.toString().trim());
+        System.out.format("[ACCURACY]: %.5f\n", accuracy);
+        System.out.println("[CONFUSION_MATRIX]:");
+
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                sb.append(confusionMatrix[i][j]);
+                if (j != n-1) sb.append(" ");
+                else sb.append("\n");
+            }
+        }
+        System.out.print(sb.toString());
     }
 
     private String getPrediction(TreeNode node, DataEntry entry, List<DataEntry> fallback) {
