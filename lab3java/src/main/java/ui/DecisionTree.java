@@ -74,10 +74,10 @@ public class DecisionTree {
         String value = entry.getDatapoint(attribute).getValue();
         TreeNode childNode = node.getChildren().get(value);
 
+        if (childNode == null) return mostFrequentValue(fallback, trainSet.getTargetVariable());
+
         List<DataEntry> newFallback = new ArrayList<>(fallback);
         newFallback.removeIf(e -> !e.getDatapoint(attribute).equals(value));
-
-        if (childNode == null) return mostFrequentValue(newFallback, trainSet.getTargetVariable());
 
         return getPrediction(childNode, entry, newFallback);
     }
@@ -129,7 +129,7 @@ public class DecisionTree {
         String v = null;
         int max = 0;
         for (Map.Entry<String, Integer> e : occurrences.entrySet()) {
-            if (v == null || e.getValue() > max || (e.getValue() == max && v.compareTo(e.getKey()) > 1)) {
+            if (v == null || e.getValue() > max || (e.getValue() == max && v.compareTo(e.getKey()) > 0)) {
                 v = e.getKey();
                 max = e.getValue();
             }
