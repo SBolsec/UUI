@@ -40,7 +40,7 @@ public class DecisionTree {
      */
     public void fit(DataSet dataset) {
         trainSet = dataset;
-        rootNode = id3(dataset.getData(), dataset.getData(), dataset.getAttributes(), dataset.getTargetVariable(), dataset, limit);
+        rootNode = id3(dataset.getData(), dataset.getData(), dataset.getAttributes(), dataset.getTargetVariable(), limit);
         System.out.println("[BRANCHES]:");
         rootNode.printBranches();
     }
@@ -56,7 +56,11 @@ public class DecisionTree {
         }
 
         // Preparing data structures
-        List<String> targetValues = new ArrayList<>(trainSet.getTargetValues());
+        Set<String> uniqueTargetValues = new TreeSet<>(trainSet.getTargetValues());
+        uniqueTargetValues.addAll(dataset.getTargetValues());
+        List<String> targetValues = new ArrayList<>(uniqueTargetValues);
+        targetValues.sort(String::compareTo); // may be redundant, but better safe than sorry
+
         int n = targetValues.size();
         int[][] confusionMatrix = new int[n][n];
         int correct = 0;
@@ -67,7 +71,6 @@ public class DecisionTree {
             // Make prediction
             String prediction = getPrediction(rootNode, entry, trainSet.getData());
             predictions.append(prediction).append(" ");
-
 
             // Increment number of correct predictions if it was correct
             String correctValue = entry.getDatapoint(trainSet.getTargetVariable()).getValue();
@@ -85,10 +88,26 @@ public class DecisionTree {
         System.out.format("[ACCURACY]: %.5f\n", accuracy);
         System.out.println("[CONFUSION_MATRIX]:");
 
+        // Find indexes to skip while printing confusion matrix
+        List<Integer> indexesToSkip = new ArrayList<>();
+        outer: for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (confusionMatrix[i][j] != 0 || confusionMatrix[j][i] != 0)
+                    continue outer;
+            }
+            indexesToSkip.add(i);
+        }
+
         // Prepare confusion matrix for printing
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < n; i++) {
+            if (indexesToSkip.contains(i))
+                continue;
+
             for (int j = 0; j < n; j++) {
+                if (indexesToSkip.contains(j))
+                    continue;
+
                 sb.append(confusionMatrix[i][j]);
                 if (j != n-1) sb.append(" ");
                 else sb.append("\n");
@@ -132,11 +151,10 @@ public class DecisionTree {
      * @param dParent data entries of the parent
      * @param x set of attributes (features) that have not been resolved yet
      * @param y target variable
-     * @param dataset structure that provides helper methods
      * @param depth used to stop the tree at the specified depth if provided
      * @return root node of constructed decision tree
      */
-    private TreeNode id3(List<DataEntry> d, List<DataEntry> dParent, Set<String> x, String y, DataSet dataset, Integer depth) {
+    private TreeNode id3(List<DataEntry> d, List<DataEntry> dParent, Set<String> x, String y, Integer depth) {
         // End recursion if depth limit is reached (if it's provided)
         if (depth != null && depth == 0) {
             String v = mostFrequentValue(d == null || d.isEmpty() ? dParent : d, y);
@@ -162,7 +180,7 @@ public class DecisionTree {
         }
 
         // Find most discriminative feature and create a new node with it
-        String feature = mostDiscriminativeFeature(d, x, dataset);
+        String feature = mostDiscriminativeFeature(d, x);
         TreeNode node = new TreeNode(feature);
 
         // Prepare new set of attributes which will be used in next recursive calls
@@ -173,13 +191,13 @@ public class DecisionTree {
 
         // Loop over all values from selected feature, create nodes from them and
         // add those nodes as children of the node that is currently being constructed.
-        for (String f : dataset.getAttributeValues().get(feature)) {
+        for (String f : trainSet.getAttributeValues().get(feature)) {
             // Filter data entries that contain specific value
             List<DataEntry> newD = new ArrayList<>(d);
             newD.removeIf(e -> !e.getDatapoint(feature).getValue().equals(f));
 
             // Recursively call this method to generate node
-            TreeNode t = id3(newD, d, newX, y, dataset, depth != null ? depth-1 : null);
+            TreeNode t = id3(newD, d, newX, y, depth != null ? depth-1 : null);
             node.addChild(f, t);
         }
 
@@ -215,17 +233,16 @@ public class DecisionTree {
      * Return the feature with the highest information gain.
      * @param d dataset on which to calculate information gain
      * @param features features for which to calculate information gain
-     * @param dataset used to get helper functions
      * @return feature with the highest information gain
      */
-    private String mostDiscriminativeFeature(List<DataEntry> d, Set<String> features, DataSet dataset) {
+    private String mostDiscriminativeFeature(List<DataEntry> d, Set<String> features) {
         String x = null;
         double max = 0;
 
         StringBuilder sb = new StringBuilder();
         for (String feature : features) {
             // Calculate information gain for given feature
-            double infGain = informationGain(d, feature, dataset);
+            double infGain = informationGain(d, feature);
 
             // Find feature with maximum information gain
             // If two features have equal information gains, max is determined by feature name
@@ -270,19 +287,18 @@ public class DecisionTree {
      * Calculates the information gain of a specific attribute in the given dataset.
      * @param data list of data entries
      * @param attribute attribute for which to calculate
-     * @param dataset dataset
      * @return information gain of given attribute in the given dataset
      */
-    private double informationGain(List<DataEntry> data, String attribute, DataSet dataset) {
-        double res = entropy(data, dataset.getTargetVariable());
+    private double informationGain(List<DataEntry> data, String attribute) {
+        double res = entropy(data, trainSet.getTargetVariable());
 
         double n = data.size();
-        for (String v : dataset.getAttributeValues().get(attribute)) {
+        for (String v : trainSet.getAttributeValues().get(attribute)) {
             List<DataEntry> entries = new ArrayList<>(data);
             entries.removeIf(e -> !e.getDatapoint(attribute).getValue().equals(v));
 
             // Calculate the entropy of a specific value of the given attribute
-            double entropy = entropy(entries, dataset.getTargetVariable());
+            double entropy = entropy(entries, trainSet.getTargetVariable());
 
             res -= (entries.size() / n * entropy);
         }
