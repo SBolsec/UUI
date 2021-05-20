@@ -10,15 +10,21 @@ import java.util.*;
 
 public class DecisionTree {
 
+    private Integer depth;
     private TreeNode rootNode;
     private Dataset trainSet;
 
     public DecisionTree() {
+        depth = null;
+    }
+
+    public DecisionTree(Integer depth) {
+        this.depth = depth;
     }
 
     public void fit(Dataset dataset) {
         trainSet = dataset;
-        rootNode = id3(dataset.getData(), dataset.getData(), dataset.getAttributes(), dataset.getTargetVariable(), dataset);
+        rootNode = id3(dataset.getData(), dataset.getData(), dataset.getAttributes(), dataset.getTargetVariable(), dataset, depth);
         System.out.println("[BRANCHES]:");
         rootNode.printBranches();
     }
@@ -82,7 +88,12 @@ public class DecisionTree {
         return getPrediction(childNode, entry, newFallback);
     }
 
-    private TreeNode id3(List<DataEntry> d, List<DataEntry> dParent, Set<String> x, String targetVariable, Dataset dataset) {
+    private TreeNode id3(List<DataEntry> d, List<DataEntry> dParent, Set<String> x, String targetVariable, Dataset dataset, Integer depth) {
+        if (depth != null && depth == 0) {
+            String v = mostFrequentValue(d == null || d.isEmpty() ? dParent : d, targetVariable);
+            return new LeafNode(v);
+        }
+
         if (d == null || d.isEmpty()) {
             String v = mostFrequentValue(dParent, targetVariable);
             return new LeafNode(v);
@@ -106,7 +117,7 @@ public class DecisionTree {
             List<DataEntry> newD = new ArrayList<>(d);
             newD.removeIf(e -> !e.getDatapoint(feature).getValue().equals(f));
 
-            TreeNode t = id3(newD, d, newX, targetVariable, dataset);
+            TreeNode t = id3(newD, d, newX, targetVariable, dataset, depth != null ? depth-1 : null);
             node.addChild(f, t);
         }
 

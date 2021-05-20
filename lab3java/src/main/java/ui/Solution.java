@@ -16,7 +16,7 @@ public class Solution {
 
 		Path trainPath = Path.of(args[0]);
 		Path testPath = Path.of(args[1]);
-		Integer limit;
+		Integer limit = null;
 
 		if (args.length == 3) {
 			try {
@@ -33,14 +33,11 @@ public class Solution {
 		}
 
 		Dataset trainDataset = new Dataset(trainPath);
-
-		DecisionTree decisionTree = new DecisionTree();
-		decisionTree.fit(trainDataset);
-
 		Dataset testDataset = new Dataset(testPath);
-		decisionTree.predict(testDataset);
 
-		System.out.println("");
+		DecisionTree decisionTree = new DecisionTree(limit);
+		decisionTree.fit(trainDataset);
+		decisionTree.predict(testDataset);
 	}
 
 	private static boolean checkPath(Path path) {
